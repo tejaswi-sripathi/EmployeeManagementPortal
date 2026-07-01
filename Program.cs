@@ -5,13 +5,25 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 builder.Services.AddControllers();
+
+// CORS Configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 // DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
 
-// Repository (IMPORTANT - missing earlier)
+// Repository
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 // Service
@@ -23,15 +35,17 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Enable CORS
+app.UseCors("ReactPolicy");
+
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
-{
-    app.UseHttpsRedirection();
-}
+
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

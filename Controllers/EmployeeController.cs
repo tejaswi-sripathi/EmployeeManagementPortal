@@ -1,5 +1,4 @@
 ﻿using EmployeeManagementPortal.DTO_s;
-using EmployeeManagementPortal.Entities;
 using EmployeeManagementPortal.Services;
 using Microsoft.AspNetCore.Mvc;
 
