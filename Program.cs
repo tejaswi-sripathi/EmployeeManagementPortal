@@ -13,7 +13,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins("http://localhost:5173","https://employee-management-portal-frontend-a5dkgzn41.vercel.app/")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
