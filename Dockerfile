@@ -1,20 +1,26 @@
-# Multi-stage build for .NET 10 application
+# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-# copy csproj and restore as distinct layers for better caching
-COPY ["EmployeeManagementPortal/EmployeeManagementPortal.csproj", "EmployeeManagementPortal/"]
-RUN dotnet restore "EmployeeManagementPortal/EmployeeManagementPortal.csproj"
+# Copy project file and restore dependencies
+COPY EmployeeManagementPortal.csproj .
+RUN dotnet restore EmployeeManagementPortal.csproj
 
-# copy everything and build
+# Copy the remaining source code
 COPY . .
-WORKDIR /src/EmployeeManagementPortal
-RUN dotnet publish "EmployeeManagementPortal.csproj" -c Release -o /app/publish
 
-# runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+# Publish the application
+RUN dotnet publish EmployeeManagementPortal.csproj -c Release -o /app/publish
+
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
-ENV ASPNETCORE_URLS=http://+:80
+
+# Render provides the PORT environment variable
+ENV ASPNETCORE_URLS=http://+:10000
+
 COPY --from=build /app/publish .
-EXPOSE 80
+
+EXPOSE 10000
+
 ENTRYPOINT ["dotnet", "EmployeeManagementPortal.dll"]
