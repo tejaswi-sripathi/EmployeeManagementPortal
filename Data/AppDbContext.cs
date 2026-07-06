@@ -18,5 +18,6 @@ namespace EmployeeManagementPortal.Data
         // OnConfiguring is not required and is intentionally omitted.
 
         public DbSet<EmployeeEntity> Employees { get; set; }
+        public DbSet<EmployeeDocument> EmployeeDocuments { get; set; }
     }
 }

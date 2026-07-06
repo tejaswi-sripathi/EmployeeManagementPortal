@@ -51,5 +51,33 @@ namespace EmployeeManagementPortal.Controllers
             EmployeeResponseDTO updatedEmployee = await _employeeService.UpdateEmployeeById(id, employeeInputDto);
             return Ok(updatedEmployee);
         }
+
+        [HttpPost("{id}/documents")]
+        public async Task<IActionResult> UploadDocument(int id, IFormFile file)
+        {
+            var doc = await _employeeService.AddDocument(id, file);
+            return Ok(doc);
+        }
+
+        [HttpGet("{id}/documents")]
+        public async Task<IActionResult> GetDocuments(int id)
+        {
+            var docs = await _employeeService.GetDocumentsByEmployeeId(id);
+            return Ok(docs);
+        }
+
+        [HttpGet("documents/{docId}")]
+        public async Task<IActionResult> DownloadDocument(int docId)
+        {
+            var (data, fileName, contentType) = await _employeeService.GetDocumentData(docId);
+            return File(data, contentType, fileName);
+        }
+
+        [HttpDelete("documents/{docId}")]
+        public async Task<IActionResult> DeleteDocument(int docId)
+        {
+            await _employeeService.DeleteDocumentById(docId);
+            return NoContent();
+        }
     }
 }

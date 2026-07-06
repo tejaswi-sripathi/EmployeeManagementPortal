@@ -21,8 +21,13 @@ namespace EmployeeManagementPortal.Services
             {
                 Name = requestDto.Name,
                 PhoneNumber = requestDto.PhoneNumber,
-                Company = requestDto.Company,
-                Salary = requestDto.Salary
+                Email = requestDto.Email,
+                CompanyMailId = requestDto.CompanyMailId,
+                Salary = requestDto.Salary,
+                Department = requestDto.Department,
+                Designation = requestDto.Designation,
+                Address = requestDto.Address,
+                City = requestDto.City
             };
 
             EmployeeResponseDTO createdEmployee = await _employeeRepository.CreateEmployee(employee);
@@ -47,6 +52,26 @@ namespace EmployeeManagementPortal.Services
         public async Task<EmployeeResponseDTO> UpdateEmployeeById(int id, EmployeeInputDto employeeInputDto)
         {
             return await _employeeRepository.UpdateEmployeeById(id, employeeInputDto);
+        }
+
+        public async Task<EmployeeDocumentResponseDto> AddDocument(int employeeId, Microsoft.AspNetCore.Http.IFormFile file)
+        {
+            return await _employeeRepository.AddDocument(employeeId, file);
+        }
+
+        public async Task<IEnumerable<EmployeeDocumentResponseDto>> GetDocumentsByEmployeeId(int employeeId)
+        {
+            return await _employeeRepository.GetDocumentsByEmployeeId(employeeId);
+        }
+
+        public async Task<(byte[] Data, string FileName, string ContentType)> GetDocumentData(int documentId)
+        {
+            return await _employeeRepository.GetDocumentData(documentId);
+        }
+
+        public async Task DeleteDocumentById(int documentId)
+        {
+            await _employeeRepository.DeleteDocumentById(documentId);
         }
     }
 }
