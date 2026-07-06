@@ -53,10 +53,10 @@ namespace EmployeeManagementPortal.Controllers
         }
 
         [HttpPost("{id}/documents")]
-        public async Task<IActionResult> UploadDocument(int id, IFormFile file)
+        public async Task<IActionResult> UploadDocuments(int id, List<IFormFile> files)
         {
-            var doc = await _employeeService.AddDocument(id, file);
-            return Ok(doc);
+            var docs = await _employeeService.AddDocuments(id, files);
+            return Ok(docs);
         }
 
         [HttpGet("{id}/documents")]

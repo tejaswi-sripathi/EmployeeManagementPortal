@@ -13,9 +13,20 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173","https://employee-management-portal-frontend-a5dkgzn41.vercel.app")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        // In Development allow any origin for easier local frontend testing.
+        // In Production restrict to known frontend origins.
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
+        else
+        {
+            policy.WithOrigins("http://localhost:5173","https://employee-management-portal-frontend-a5dkgzn41.vercel.app")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
     });
 });
 

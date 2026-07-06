@@ -54,9 +54,15 @@ namespace EmployeeManagementPortal.Services
             return await _employeeRepository.UpdateEmployeeById(id, employeeInputDto);
         }
 
-        public async Task<EmployeeDocumentResponseDto> AddDocument(int employeeId, Microsoft.AspNetCore.Http.IFormFile file)
+        public async Task<IEnumerable<EmployeeDocumentResponseDto>> AddDocuments(int employeeId, List<Microsoft.AspNetCore.Http.IFormFile> files)
         {
-            return await _employeeRepository.AddDocument(employeeId, file);
+            var results = new List<EmployeeDocumentResponseDto>();
+            foreach (var file in files)
+            {
+                var r = await _employeeRepository.AddDocument(employeeId, file);
+                results.Add(r);
+            }
+            return results;
         }
 
         public async Task<IEnumerable<EmployeeDocumentResponseDto>> GetDocumentsByEmployeeId(int employeeId)
