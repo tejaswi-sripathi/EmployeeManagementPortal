@@ -17,9 +17,11 @@ builder.Services.AddCors(options =>
         // In Production restrict to known frontend origins.
         if (builder.Environment.IsDevelopment())
         {
-            policy.AllowAnyOrigin()
+            // Allow all origins and credentials for local development (use only for dev)
+            policy.SetIsOriginAllowed(_ => true)
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         }
         else
         {
@@ -45,6 +47,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// If running on platforms like Render, listen on the port provided by the environment
+// Render sets the PORT environment variable. Bind to 0.0.0.0 so external traffic reaches Kestrel.
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
+
+// Rebuild app if WebHost settings changed
+app = builder.Build();
 
 // Enable CORS
 app.UseCors("ReactPolicy");
